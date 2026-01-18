@@ -1,18 +1,23 @@
+# ==========================================
+# RE Shopping Cart Web App - Application Configuration
+# ==========================================
+# Environment variables are loaded from .env.{profile} files
+# via java-dotenv in ReShoppingCartWebAppApplication.java
+
 server:
-  port: 8080
+  port: ${SERVER_PORT:8080}
 
 spring:
   application:
     name: re-shopping-cart-web-app
 
   profiles:
-    active: prod # Production development
-    # active: local # Local development
+    active: ${SPRING_PROFILES_ACTIVE:prod}
 
   datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:defaultdb}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -21,8 +26,38 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
     hibernate:
-      ddl-auto: none
-    show-sql: false
+      ddl-auto: ${JPA_DDL_AUTO:none}
+    show-sql: ${JPA_SHOW_SQL:false}
+
+  thymeleaf:
+    cache: ${THYMELEAF_CACHE:true}
+
+---
+# ==========================================
+# Local Development Profile
+# ==========================================
+spring:
+  config:
+    activate:
+      on-profile: local
+
+  jpa:
+    show-sql: true
 
   thymeleaf:
     cache: false
+
+---
+# ==========================================
+# Production Profile
+# ==========================================
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  jpa:
+    show-sql: false
+
+  thymeleaf:
+    cache: true
